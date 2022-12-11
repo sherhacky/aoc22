@@ -2,7 +2,6 @@ from math import prod
 
 with open('./input11.txt') as f:
     data = f.read()
-
 monkey_chunks = data.split('\n\n')
 
 def initialize():
@@ -15,35 +14,25 @@ def initialize():
         target_monkey.append((int(lines[5].split(' ')[-1]), int(lines[4].split(' ')[-1])))
     return items, operation, test_divisible_by, target_monkey
 
-# part 1
-items, operation, test_divisible_by, target_monkey = initialize()
-monkey_count = [0]*len(items)
-for _ in range(20):
-    for i in range(len(items)):
-        monkey_count[i] += len(items[i])
-        while items[i]:
-            current_item = items[i].pop(0)
-            current_item = eval(operation[i], {'old': current_item})
-            current_item //= 3
-            items[target_monkey[i][int(current_item % test_divisible_by[i] == 0)]].append(current_item)
+def get_monkey_business(iterations, worry_reducing_function):
+    items, operation, test_divisible_by, target_monkey = initialize()
+    monkey_count = [0]*len(items)
+    for _ in range(iterations):
+        for i in range(len(items)):
+            monkey_count[i] += len(items[i])
+            while items[i]:
+                current_item = items[i].pop(0)
+                current_item = eval(operation[i], {'old': current_item})
+                current_item = worry_reducing_function(current_item)
+                passes_test = (current_item % test_divisible_by[i] == 0)
+                next_monkey = target_monkey[i][int(passes_test)]
+                items[next_monkey].append(current_item)
+    return prod(sorted(monkey_count)[-2:])
 
-monkey_business = prod(sorted(monkey_count)[-2:])
-print(monkey_business)
+# part 1
+print(get_monkey_business(20, lambda x: x // 3))
 
 # part 2
-items, operation, test_divisible_by, target_monkey = initialize()
-monkey_count = [0]*len(items)
-
+i, o, test_divisible_by, t = initialize()
 modulo = prod(test_divisible_by)
-
-for _ in range(10000):
-    for i in range(len(items)):
-        monkey_count[i] += len(items[i])
-        while items[i]:
-            current_item = items[i].pop(0)
-            current_item = eval(operation[i], {'old': current_item})
-            current_item %= modulo
-            items[target_monkey[i][int(current_item % test_divisible_by[i] == 0)]].append(current_item)
-
-monkey_business = prod(sorted(monkey_count)[-2:])
-print(monkey_business)
+print(get_monkey_business(10000, lambda x: x % modulo))

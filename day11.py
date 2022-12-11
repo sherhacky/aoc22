@@ -33,6 +33,6 @@ def get_monkey_business(iterations, worry_reducing_function):
 print(get_monkey_business(20, lambda x: x // 3))
 
 # part 2
-i, o, test_divisible_by, t = initialize()
-modulo = prod(test_divisible_by)
-print(get_monkey_business(10000, lambda x: x % modulo))
+test_divisible_by = initialize()[2]
+modulus = prod(test_divisible_by)
+print(get_monkey_business(10000, lambda x: x % modulus))

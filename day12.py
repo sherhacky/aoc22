@@ -13,40 +13,44 @@ height = {'S': 0, 'E': 25} | {char: i for i,char in enumerate(letters)}
 
 # part 1
 visited = {start}
-next_group = {start}
+current = [start]
 steps = 0
 while end not in visited:
     new = set()
-    while next_group:
-        x,y = next_group.pop()
+    while current:
+        x,y = current.pop()
         for i,j in [(1,0), (0,1), (-1,0), (0,-1)]:
-            if (0 <= x+i < m and  
+            if (
+                0 <= x+i < m and  
                 0 <= y+j < n and  
                 height[rows[x+i][y+j]] <= height[rows[x][y]] + 1 and  
-                (x+i,y+j) not in visited):
+                (x+i,y+j) not in visited
+                ):
                 new.add((x+i,y+j))
     visited |= new
-    next_group = {pt for pt in new}
+    current = [pt for pt in new]
     steps += 1
 print(steps)
 
 # part 2
 visited = {end}
-next_group = {end}
+current = [end]
 steps = 0
 seen_values = set()
 while 0 not in seen_values:
     new = set()
-    while next_group:
-        x,y = next_group.pop()
+    while current:
+        x,y = current.pop()
         for i,j in [(1,0), (0,1), (-1,0), (0,-1)]:
-            if (0 <= x+i < m and 
+            if (
+                0 <= x+i < m and 
                 0 <= y+j < n and 
                 height[rows[x][y]] <= height[rows[x+i][y+j]] + 1 and 
-                (x+i,y+j) not in visited):
+                (x+i,y+j) not in visited
+                ):
                 new.add((x+i,y+j))
     visited |= new
     seen_values |= {height[rows[i][j]] for i,j in new}
-    next_group = {pt for pt in new}
+    current = [pt for pt in new]
     steps += 1
 print(steps)

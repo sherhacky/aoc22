@@ -33,12 +33,10 @@ for i, [left, right] in enumerate(list_pairs):
 print(total)
 
 # part 2
-lists = [pair[i] for pair in list_pairs for i in range(2)] + [[[2]], [[6]]]
-
 def comparison_function(left, right):
     result = compare(left, right)
     return ['T', 'I', 'F'].index(result) - 1
 
+lists = [pair[i] for pair in list_pairs for i in range(2)] + [[[2]], [[6]]]
 sorted_lists = sorted(lists, key=cmp_to_key(comparison_function))
-
 print((sorted_lists.index([[2]]) + 1) * (sorted_lists.index([[6]]) + 1))

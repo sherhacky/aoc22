@@ -28,7 +28,7 @@ field = [['.']*(maxes[0]+1) for _ in range(maxes[1]+1)]
 
 def segment(pt1, pt2):
     x_min, x_max = tuple(sorted([pt1[0], pt2[0]]))
-    y_min, y_max = min(pt1[1], pt2[1]), max(pt1[1], pt2[1])
+    y_min, y_max = tuple(sorted([pt1[1], pt2[1]]))
     return [[i,j] for i in range(x_min, x_max+1) for j in range(y_min, y_max+1)]
 
 for path in rock_paths:
@@ -83,3 +83,36 @@ print(grain_count)
 # print(field)
 
 # print(segment([504,19], [508,19]))
+
+
+# part 2
+
+
+field = dict()
+
+for path in rock_paths:
+    # print(path)
+    for k in range(len(path)-1):
+        # print(segment(path[k], path[k+1]))
+        for [x,y] in segment(path[k], path[k+1]):
+            # print(j,i)
+            field[(y,x)] = '#'
+
+for x in range(-500, 1500):
+    field[(maxes[1]+2, x)] = '#'
+
+def drop_grain_dict():
+    i, j = 0, 500
+    while any([(i+1,k) not in field for k in [j, j-1, j+1]]):
+        i += 1
+        j = [k for k in [j, j-1, j+1] if (i, k) not in field][0]
+        # print(j,i)
+        # print_chunk(j,i)
+    field[(i,j)] = 'o'
+
+grain_count = 0
+while (0, 500) not in field:
+    drop_grain_dict()
+    grain_count += 1
+
+print(grain_count)

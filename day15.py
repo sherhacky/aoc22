@@ -12,9 +12,6 @@ for line in rows:
                         [int(p[-2].split('=')[1][:-1]), int(p[-1].split('=')[1])]]
     pairs.append([sensor, beacon])
 
-for [sensor, beacon] in pairs:
-    distance = sum([abs(sensor[i] - beacon[i]) for i in [0,1]])
-
 # part 1
 def omitted_positions(pairs, y):
     omitted = set()

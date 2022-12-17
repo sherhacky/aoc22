@@ -72,17 +72,27 @@ print('Part 1:', max(best_values_at_state.values()))
 print(process_time(), 'seconds elapsed')
 
 # part 2
-def power_set(char_fun):
-    if len(char_fun) == 0:
-        return {tuple([])}
-    return {(i,) + subset for i in range(char_fun[0] + 1) for subset in power_set(char_fun[1:])}
+best_values_among_subsets = best_values_at_state_dict(26)
+for state in itertools.product([0, 1], repeat=len(nonzero_nodes)):
+    if best_values_among_subsets[state] > 0:
+        continue
+    previous_nodes = []
+    for i, val in enumerate(state):
+        if val:
+            previous_state = list(state)
+            previous_state[i] = 0
+            previous_nodes.append(tuple(previous_state))
+    best_values_among_subsets[state] = max(
+        [best_values_among_subsets[previous_state] for previous_state in previous_nodes],
+        default = 0
+    )
 
-best_values_at_state = best_values_at_state_dict(26)
 best = 0
 for subset in itertools.product([0,1], repeat=len(nonzero_nodes)):
     complement = tuple(1-i for i in subset)
-    for further_subset in power_set(subset):
-        best = max(best, best_values_at_state[further_subset] + best_values_at_state[complement])
+    new = max(best, best_values_among_subsets[subset] + best_values_among_subsets[complement])
+    if new > best:
+        best = new
 
 print('Part 2:', best)
 print(process_time(), 'seconds elapsed')

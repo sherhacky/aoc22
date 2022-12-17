@@ -7,7 +7,7 @@ with open('./input17.txt') as f:
 
 shifts = data.split('\n')[:-1][0]
 
-shifts = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
+shiftsy = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
 
 rocks_string = '''####
 
@@ -100,6 +100,7 @@ def simulate_dropped_rocks(num_rocks):
         i_rock = (i_rock + 1) % len(rocks)
     print_board(seed_rock(rocks[i_rock], stack_height), occupied_positions)
     print('Tower height:', stack_height)
+    return stack_height
 
 simulate_dropped_rocks(2022)
 
@@ -141,108 +142,27 @@ while (board, i_shift, i_rock) not in seen_arrangements:
 
 print('first loop encountered looks like:')
 print_board(seed_rock(rocks[i_rock], stack_height), occupied_positions)
-print('first phase: ', rock_count)
-first_count, first_height = seen_arrangements[(board, i_shift, i_rock)]
-print('seen at: ', first_count)
-rock_period = rock_count - first_count
-height_increase = stack_height - first_height
+print(rock_count, 'rocks_dropped')
+print('tower height is', stack_height)
 
-#many_rocks = 1000000000000
-many_rocks = 33333
-loops = many_rocks//rock_period
+[ct_0, ht_0] = seen_arrangements[(board, i_shift, i_rock)]
+print('height zero ', ht_0)
+ct, ht = rock_count, stack_height
+ct_delta, ht_delta = ct - ct_0, ht - ht_0
 
-print('residues')
-start_at = many_rocks
-print(first_count)
-while start_at % rock_period != first_count:
-    start_at -= 1
-print(many_rocks)
-print(start_at)
 
-simulate_dropped_rocks(first_count + many_rocks - start_at)
+big_number = 1000000000000
+# big_number = 11111
 
-print('last_stack', stack_height)
-print('first stack', first_height)
-print('increase per loop', height_increase)
-print('rocks first loop', first_count)
-print('rocks per loop', rock_period)
-print('total loops before big number', loops)
-print(stack_height + loops*height_increase - first_height)
-print(first_height + loops*height_increase + (stack_height - first_height))
+ct_last_cycle = big_number
+while ct_last_cycle % ct_delta != ct_0:
+    ct_last_cycle -= 1
 
-'''print_board(seed_rock(rocks[i_rock], stack_height), occupied_positions)
-print(stack_height)
+print(ct_last_cycle - ct_0, 'iterations in loops')
 
-rock_count = 1000000000000
-while rock_count % 1745 != 84:
-    rock_count -= 1
+guess = ht_delta * (ct_last_cycle // ct_delta) + simulate_dropped_rocks(ct_0 + big_number - ct_last_cycle)
+print('is it {}?'.format(guess))
+#simulate_dropped_rocks(ct_0)
 
-print(rock_count)
-print(1000000000000 - rock_count)
-print(1000000000000//1745)
-print(rock_count//1745)
-print(2738*(rock_count//1745))
-
-'''
-i_shift = 0
-i_rock = 0
-stack_height = 0
-occupied_positions = set()
-
-simulate_dropped_rocks(many_rocks)
-simulate_dropped_rocks(start_at - 1)
-
-# print(many_rocks)
-
-# for _ in range(many_rocks):
-#     rock = seed_rock(rocks[i_rock], stack_height)
-# #    print('stack height is ', stack_height)
-#     resting = False
-#     while not resting:
-#     #    print(rock)
-#         #print_board(rock, occupied_positions)
-#         next_position = shift_horiz(rock, shifts[i_shift])
-#         if all([0 <= j < 7 for (i,j) in next_position]) and all([i >= 0 and (i,j) not in occupied_positions for (i,j) in next_position]):
-#             rock = next_position
-#         #print_board(rock, occupied_positions)
-#         next_position = shift_down(rock)
-#         if all([i >= 0 and (i,j) not in occupied_positions for (i,j) in next_position]):
-#             rock = next_position
-#         else:
-#             resting = True
-#             occupied_positions |= set(rock)
-#             stack_height = max([i+1 for (i,j) in rock] + [stack_height])
-#         i_shift = (i_shift + 1) % len(shifts)
-#     i_rock = (i_rock + 1) % len(rocks)
-# print_board(seed_rock(rocks[i_rock], stack_height), occupied_positions)
-# print('height', stack_height)
-
-# i_shift = 0
-# i_rock = 0
-# stack_height = 0
-# occupied_positions = set()
-
-# print(start_at)
-
-# for _ in range(start_at-1):
-#     rock = seed_rock(rocks[i_rock], stack_height)
-# #    print('stack height is ', stack_height)
-#     resting = False
-#     while not resting:
-#     #    print(rock)
-#         #print_board(rock, occupied_positions)
-#         next_position = shift_horiz(rock, shifts[i_shift])
-#         if all([0 <= j < 7 for (i,j) in next_position]) and all([i >= 0 and (i,j) not in occupied_positions for (i,j) in next_position]):
-#             rock = next_position
-#         #print_board(rock, occupied_positions)
-#         next_position = shift_down(rock)
-#         if all([i >= 0 and (i,j) not in occupied_positions for (i,j) in next_position]):
-#             rock = next_position
-#         else:
-#             resting = True
-#             occupied_positions |= set(rock)
-#             stack_height = max([i+1 for (i,j) in rock] + [stack_height])
-#         i_shift = (i_shift + 1) % len(shifts)
-#     i_rock = (i_rock + 1) % len(rocks)
-# print_board(seed_rock(rocks[i_rock], stack_height), occupied_positions)
-# print('height', stack_height)
+# simulate_dropped_rocks(ct_last_cycle)
+# simulate_dropped_rocks(big_number)

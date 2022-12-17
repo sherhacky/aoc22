@@ -18,8 +18,8 @@ for line in rows:
     neighbors[words[1]] = [w[:2] for w in words[9:]]
 
 distance = dict()
-for start_node in ['AA']+nonzero_nodes:
-    distance[(start_node,start_node)] = 0
+for start_node in ['AA'] + nonzero_nodes:
+    distance[(start_node, start_node)] = 0
     current_nodes = {start_node}
     i = 0
     while any([node not in current_nodes for node in weight]):
@@ -33,11 +33,11 @@ def previous_states(state, node):
     result = []
     previous_state = list(state)
     previous_state[nonzero_nodes.index(node)] = 0
-    previous_nodes = [nonzero_nodes[i] for i,val in enumerate(previous_state) if val]
+    previous_nodes = [nonzero_nodes[i] for i, val in enumerate(previous_state) if val]
     if not previous_nodes:
         previous_nodes.append('AA')
     for previous_node in previous_nodes:
-        time_taken = distance[(node, previous_node)]+1
+        time_taken = distance[(node, previous_node)] + 1
         result.append((tuple(previous_state), previous_node, time_taken))
     return result
 
@@ -49,25 +49,21 @@ def best_values_at_state_dict(total_time):
             best_values[(state, 'AA')] = {0: 0}
             continue
         positions = [i for i, val in enumerate(state) if val]
-        if len(positions) > 0:
-            for i in positions:
-                node = nonzero_nodes[i]
-                best_values[(state, node)] = collections.defaultdict(int)
-                for previous_state, previous_node, time_taken in previous_states(state, node):
-                    for t in best_values[(previous_state, previous_node)]:
-                        if t+time_taken < total_time:
-                            value_from_previous = best_values[(previous_state, previous_node)][t]
-                            current_value = value_from_previous + (total_time - (t+time_taken)) * weight[node]
-                            best_values[(state, node)][t + time_taken] = max(
-                                current_value,
-                                best_values[(state, node)][t + time_taken]
-                            )
-        best_values_at_state[state] = max(
-            [
-                v for posn in nonzero_nodes if (state, posn) in best_values  \
-                  for v in best_values[(state, position)].values() 
-            ] + [0]
-        )
+        for i in positions:
+            node = nonzero_nodes[i]
+            best_values[(state, node)] = collections.defaultdict(int)
+            for previous_state, previous_node, time_taken in previous_states(state, node):
+                for t in best_values[(previous_state, previous_node)]:
+                    if t + time_taken < total_time:
+                        value_from_previous = best_values[(previous_state, previous_node)][t]
+                        current_value = value_from_previous + (total_time - (t + time_taken)) * weight[node]
+                        best_values[(state, node)][t + time_taken] = max(
+                            current_value,
+                            best_values[(state, node)][t + time_taken]
+                        )
+        best_values_at_state[state] = max([v for position in nonzero_nodes if (state, position) in best_values  \
+                                             for v in best_values[(state, position)].values()],
+                                          default=0)
     return best_values_at_state
 
 # part 1
@@ -79,10 +75,7 @@ print(process_time(), 'seconds elapsed')
 def power_set(char_fun):
     if len(char_fun) == 0:
         return {tuple([])}
-    if char_fun[0] == 0:
-        return {(0,)+subset for subset in power_set(char_fun[1:])}
-    else:
-        return {(i,)+subset for i in [0,1] for subset in power_set(char_fun[1:])}
+    return {(i,) + subset for i in range(char_fun[0] + 1) for subset in power_set(char_fun[1:])}
 
 best_values_at_state = best_values_at_state_dict(26)
 best = 0

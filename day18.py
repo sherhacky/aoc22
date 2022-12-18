@@ -55,3 +55,4 @@ for i,j,k in itertools.product(range(extremes[0], extremes[1]+1), repeat=3):
         interior |= interior_component
     
 print(exterior_surface_area(cubes) - interior_surface_area)
+print('Took {} seconds'.format(process_time()))

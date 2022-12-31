@@ -189,7 +189,6 @@ def get_corners_of_folded_cube(board):
                         this_corner.append((i + a, j + b))
             if any(this_corner):
                 corners.add(frozenset(this_corner))
-    iters = 0
     while any([len(corner) != 3 for corner in corners]):
         complete_corners = [pointset for pointset in corners if len(pointset) == 3]
         for corner in complete_corners:

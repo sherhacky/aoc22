@@ -236,6 +236,7 @@ def move_along_cube(board, position, orientation, edge_cases):
     else:
         return position, orientation
 
+
 def traverse_cube(board, starting_position, starting_orientation, instructions):
     board_rendered = [[char for char in line] for line in board]
     edge_cases = paste_cube_edges(board)
